@@ -1,5 +1,6 @@
 package com.example.quiz.testhibernate;
 
+import com.example.quiz.testhibernate.pojo.SimplePojo;
 import com.example.quiz.testhibernate.repositories.TestCustomRepository;
 import com.example.quiz.testhibernate.repositories.TestRepository;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class TestHibernateApplicationTests {
 
 	@Test
 	public void testDistinctSpringData_ShowOnlyType1(){
-		List<String> tests = testRepository.customQueryGetTestTypeDistinctByType("Type 1");
+		List<SimplePojo> tests = testRepository.customQueryGetTestTypeDistinctByType("Type 1");
 		System.out.println("By Spring Data");
 		System.out.println(tests);
 		assertEquals(tests.size(), 1);
@@ -48,7 +49,7 @@ public class TestHibernateApplicationTests {
 
 	@Test
 	public void testDistinctSpringData_ShowAllTypes(){
-		List<String> tests = testRepository.customQueryGetTestTypeDistinct();
+		List<SimplePojo> tests = testRepository.customQueryGetTestTypeDistinct();
 		System.out.println("By Spring Data");
 		System.out.println(tests);
 		assertEquals(tests.size(), 3);
@@ -56,7 +57,7 @@ public class TestHibernateApplicationTests {
 
 	@Test
 	public void testDistinctCustomRepository_ShowOnlyType1(){
-		List<String> tests = testCustomRepository.findTypesUsingCriteria();
+		List<SimplePojo> tests = testCustomRepository.findTypesUsingCriteria();
 		System.out.println("By Criteria");
 		System.out.println(tests);
 		assertEquals(tests.size(), 3);

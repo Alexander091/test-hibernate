@@ -14,11 +14,11 @@ com.example.quiz.testhibernate.repositories.TestCustomRepository
 The first interface uses pure Spring Data functionality:
 
 ``` java
-@Query("select t.type from Test t where t.type = :type group by type")
-List<String> customQueryGetTestTypeDistinctByType(@Param("type") String type);
+@Query("select new com.example.quiz.testhibernate.pojo.SimplePojo(t.type) from Test t where t.type = :type group by type")
+List<SimplePojo> customQueryGetTestTypeDistinctByType(@Param("type") String type);
 
-@Query("select t.type from Test t group by type")
-List<String> customQueryGetTestTypeDistinct();
+@Query("select new com.example.quiz.testhibernate.pojo.SimplePojo(t.type)  from Test t group by type")
+List<SimplePojo> customQueryGetTestTypeDistinct();
 
 ```
 This example uses SpEL expressions and queries are very understandable and readable.
@@ -30,15 +30,16 @@ com.example.quiz.testhibernate.repositories.TestCustomRepositoryImpl
 uses Hibernate criteria
 
 ``` java
-public List<String> findTypesUsingCriteria() {
+public List<SimplePojo> findTypesUsingCriteria() {
 
-        Session session = entityManager.unwrap(Session.class);
-        Criteria crit = session.createCriteria(Test.class).setProjection(
-                Projections.distinct(Projections.projectionList()
-                        .add(Projections.property("type"), "type")));
-        List list = crit.list();
-        return list;
-    }
+    Session session = entityManager.unwrap(Session.class);
+    Criteria crit = session.createCriteria(Test.class).setProjection(
+            Projections.distinct(Projections.projectionList()
+                    .add(Projections.property("type"), "type"))
+    ).setResultTransformer(Transformers.aliasToBean(SimplePojo.class));
+    List list = crit.list();
+    return list;
+}
 ```
 
 Also, this project contains Integration test class
